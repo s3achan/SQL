@@ -1,0 +1,36 @@
+WITH daily_deposits AS (
+    SELECT  
+        DATE(created_at) AS dt, 
+        SUM(transaction_value) AS daily_deposits
+    FROM bank_transactions 
+    WHERE transaction_value > 0 
+    GROUP BY dt
+)
+
+SELECT 
+    DATE_FORMAT(dt, '%Y-%m-%d') AS dt,
+    AVG(daily_deposits) OVER(
+        ORDER BY  dt
+        ROWS BETWEEN 2  PRECEDING and current row 
+    ) as rolling_three_day 
+FROM daily_deposits
+ORDER BY dt
+
+---------------------------------------
+
+WITH daily_deposits AS (
+  SELECT
+    DATE(created_at) AS dt,
+    SUM(transaction_value) AS daily_deposits
+  FROM bank_transactions
+  WHERE transaction_value > 0
+  GROUP BY DATE(created_at)
+)
+SELECT
+  DATE_FORMAT(d1.dt, '%Y-%m-%d') AS dt,
+  AVG(d2.daily_deposits) AS rolling_three_day
+FROM daily_deposits d1
+JOIN daily_deposits d2
+  ON d2.dt BETWEEN DATE_SUB(d1.dt, INTERVAL 2 DAY) AND d1.dt
+GROUP BY d1.dt
+ORDER BY d1.dt;
