@@ -1,0 +1,10 @@
+SELECT 1 as question_id, count(*) as answer from annual_payments
+UNION SELECT 2 as question_id, count(distinct user_id) as answer from annual_payments
+UNION SELECT 3 as question_id, count(*) as answer from annual_payments    
+      where status='paid' and amount >=100
+UNION  SELECT 4 as question_id, answer FROM (
+    SELECT product as answer FROM annual_payments
+    WHERE status='paid'
+    ORDER BY amount DESC 
+    LIMIT 1
+) t
