@@ -1,0 +1,16 @@
+You are a chef preparing for an important event. You downloaded three recipes to make and imported each as a separate table: recipe1, recipe2, recipe3 into your database. 
+Each recipe requires some grocery items in various quantities.
+
+Write a query that sums up the total mass of each grocery item required across all recipes.
+
+
+SELECT 1 as question_id, count(*) as answer from annual_payments
+UNION SELECT 2 as question_id, count(distinct user_id) as answer from annual_payments
+UNION SELECT 3 as question_id, count(*) as answer from annual_payments    
+      where status='paid' and amount >=100
+UNION  SELECT 4 as question_id, answer FROM (
+    SELECT product as answer FROM annual_payments
+    WHERE status='paid'
+    ORDER BY amount DESC 
+    LIMIT 1
+) t
