@@ -1,0 +1,15 @@
+WITH cte AS (
+    SELECT
+        user_id,
+        SUM(
+            CASE WHEN (channel = 'Facebook' OR channel = 'Google') 
+                 THEN 1 ELSE 0 END) AS paid_count
+    FROM user_sessions
+    JOIN attribution ON 
+    user_sessions.session_id = attribution.session_id
+    GROUP BY user_id)
+
+SELECT
+    user_id,
+    CASE WHEN paid_count >=1 THEN 'paid' ELSE 'organic' END AS attribute
+FROM cte
